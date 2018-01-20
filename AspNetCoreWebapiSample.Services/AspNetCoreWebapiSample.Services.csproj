@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AspNetCoreWebapiSample.Domain\AspNetCoreWebapiSample.Domain.csproj" />
+    <ProjectReference Include="..\AspNetCoreWebapiSample.Infrastructure\AspNetCoreWebapiSample.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

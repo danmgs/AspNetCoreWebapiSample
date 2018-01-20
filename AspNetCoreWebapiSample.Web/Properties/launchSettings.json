@@ -19,7 +19,7 @@
     "AspNetCoreWebapiSample.Web": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "api/values",
+      "launchUrl": "api/hero",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
