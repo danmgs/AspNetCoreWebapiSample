@@ -15,6 +15,5 @@
 <ul>
   <li>SOLID principles</li>
   <li>TDD (Test Driven Development)</li>
-  <li>IoC (Inversion of Control)</li>
-  <li>DI (Dependency Injection)</li>
+  <li>IoC (Inversion of Control)</li>  
 </ul>
