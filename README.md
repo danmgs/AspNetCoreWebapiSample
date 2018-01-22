@@ -8,6 +8,7 @@
   <li>WebApi</li>
   <li>AutoMapper</li>
   <li>XUnit</li>  
+  <li>Moq</li>  
   <li>Swagger</li>  
 </ul>
 
