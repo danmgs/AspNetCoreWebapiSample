@@ -3,6 +3,7 @@ using AspNetCoreWebapiSample.Domain.Exceptions;
 using AspNetCoreWebapiSample.Domain.Interfaces.Service;
 using AspNetCoreWebapiSample.Web.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreWebapiSample.Web.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]")]    
     public class HeroController : Controller
     {
         private readonly IHeroService _heroService;
@@ -20,7 +21,7 @@ namespace AspNetCoreWebapiSample.Web.Controllers
         public HeroController(IHeroService heroService, IMapper mapper)
         {
             _heroService = heroService ?? throw new ArgumentNullException(nameof(heroService));
-            _mapper = mapper;
+            _mapper = mapper;            
         }
 
         [HttpGet]
@@ -49,7 +50,7 @@ namespace AspNetCoreWebapiSample.Web.Controllers
             }
         }
 
-
+        
         [HttpPost]
         [ProducesResponseType(typeof(HeroModel), StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -73,7 +74,7 @@ namespace AspNetCoreWebapiSample.Web.Controllers
             }
         }
 
-
+        
         [HttpPut]
         [ProducesResponseType(typeof(HeroModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -107,8 +108,9 @@ namespace AspNetCoreWebapiSample.Web.Controllers
         }
 
 
+        
         [HttpDelete]
-        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]        
         public async Task<IActionResult> Delete(int id)
         {
             await _heroService.DeleteAsync(id);

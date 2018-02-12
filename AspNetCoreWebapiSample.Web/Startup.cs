@@ -11,6 +11,13 @@ using AspNetCoreWebapiSample.Web.Models.Mappings;
 using AspNetCoreWebapiSample.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
+using AspNetCoreWebapiSample.Infrastructure.Identity;
+using System;
+using Microsoft.AspNetCore.Identity;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace AspNetCoreWebapiSample.Web
 {
@@ -31,11 +38,57 @@ namespace AspNetCoreWebapiSample.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<HeroContext>(opt => opt.UseInMemoryDatabase());
+            services.AddSingleton<IConfiguration>(Configuration);
+
+
+            services.AddDbContext<HeroContext>(opt => opt.UseInMemoryDatabase("herodb"));
+            services.AddIdentity<AppUser, AppRole>()
+                .AddEntityFrameworkStores<HeroContext>();
+
+
+            services.Configure<IdentityOptions>(options =>
+            {
+                // Password settings
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = true;                
+                options.Password.RequireLowercase = false;                
+
+                // Lockout settings                
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings
+                options.User.RequireUniqueEmail = true;
+            });
+
+
             services.AddSingleton<IHeroService, HeroService>();
             services.AddSingleton<IHeroRepository, HeroRepository>();
             services.AddSingleton<ISuperPowerService, SuperPowerService>();
             services.AddSingleton<ISuperPowerRepository, SuperPowerRepository>();
+
+
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            services.AddAuthentication(o =>
+            {
+                o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(c =>
+            {
+                c.RequireHttpsMetadata = false;
+                c.SaveToken = true;
+                c.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidIssuer = Configuration["JwtConfiguration:Issuer"],
+                    ValidAudience = Configuration["JwtConfiguration:Issuer"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtConfiguration:Key"])),
+                    ClockSkew = TimeSpan.Zero // remove delay of token when expire
+                };
+            });
 
 
             // AutoMapper
@@ -59,11 +112,10 @@ namespace AspNetCoreWebapiSample.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
@@ -75,7 +127,36 @@ namespace AspNetCoreWebapiSample.Web
             });
 
 
+            app.UseAuthentication();
+
             app.UseMvc();
+
+
+            this.CreateRoles(serviceProvider);
+        }
+
+
+        private async void CreateRoles(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<AppRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<AppUser>>();
+
+            string[] roles = { "Admin", "Manager" };
+
+
+            foreach (var role in roles)
+            {
+                var roleExist = await roleManager.RoleExistsAsync(role);
+                if (!roleExist)
+                {                           
+                    var roleResult = await roleManager.CreateAsync(new AppRole { Name = role });
+                    if (!roleResult.Succeeded)
+                    {
+                        throw new Exception(string.Format("Error while creating the role {0}", role));
+                    }
+                }
+            }
+
         }
     }
 }

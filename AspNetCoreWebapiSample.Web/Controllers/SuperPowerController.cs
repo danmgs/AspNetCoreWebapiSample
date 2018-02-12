@@ -3,6 +3,7 @@ using AspNetCoreWebapiSample.Domain.Exceptions;
 using AspNetCoreWebapiSample.Domain.Interfaces.Service;
 using AspNetCoreWebapiSample.Web.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -11,7 +12,9 @@ using System.Threading.Tasks;
 
 namespace AspNetCoreWebapiSample.Web.Controllers
 {
+    
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     public class SuperPowerController : Controller
     {
         private readonly ISuperPowerService _superPowerService;
@@ -24,13 +27,13 @@ namespace AspNetCoreWebapiSample.Web.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<SuperPowerModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<SuperPowerModel>), StatusCodes.Status200OK)]                
         public async Task<IActionResult> GetAll()
         {
             var model = _mapper.Map<IEnumerable<SuperPowerModel>>(await _superPowerService.GetAllAsync());
             return Ok(model);
         }
-
+                
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(SuperPowerModel), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
