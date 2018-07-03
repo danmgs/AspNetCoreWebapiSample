@@ -65,10 +65,11 @@ namespace AspNetCoreWebapiSample.Web
             });
 
 
-            services.AddSingleton<IHeroService, HeroService>();
-            services.AddSingleton<IHeroRepository, HeroRepository>();
-            services.AddSingleton<ISuperPowerService, SuperPowerService>();
-            services.AddSingleton<ISuperPowerRepository, SuperPowerRepository>();
+            
+            services.AddScoped<IHeroRepository, HeroRepository>();
+            services.AddScoped<ISuperPowerRepository, SuperPowerRepository>();
+            services.AddTransient<IHeroService, HeroService>();
+            services.AddTransient<ISuperPowerService, SuperPowerService>();       
 
 
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
