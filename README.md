@@ -1,4 +1,4 @@
-# ASP.NET Core Webapi Sample + Identity + Jwt + Swagger + Unit Tests
+# ASP.NET Core Webapi Sample + Identity + Jwt + EF Core + Swagger + Unit Tests
 <p>This repository contains a Sample Project in Asp.net Core WebApi</p>
 
 <h3>Using</h3>
