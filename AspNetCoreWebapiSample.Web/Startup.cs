@@ -7,7 +7,6 @@ using AspNetCoreWebapiSample.Domain.Interfaces.Service;
 using AspNetCoreWebapiSample.Services;
 using AspNetCoreWebapiSample.Domain.Interfaces.Repository;
 using AspNetCoreWebapiSample.Infrastructure.Repository;
-using AspNetCoreWebapiSample.Web.Models.Mappings;
 using AspNetCoreWebapiSample.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Swashbuckle.AspNetCore.Swagger;
@@ -19,6 +18,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 
 namespace AspNetCoreWebapiSample.Web
 {
@@ -93,14 +93,9 @@ namespace AspNetCoreWebapiSample.Web
             });
 
 
-            // AutoMapper
-            var config = new AutoMapper.MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile(new DomainProfile());
-                cfg.AddProfile(new ModelProfile());
-            });
-            var mapper = config.CreateMapper();
-            services.AddSingleton(mapper);
+            // AutoMapper            
+            services.AddAutoMapper();
+    
 
             // Add framework services.
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -121,7 +116,6 @@ namespace AspNetCoreWebapiSample.Web
 
             // Enable middleware to serve generated Swagger as a JSON endpoint.
             app.UseSwagger();
-
             // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.), specifying the Swagger JSON endpoint.
             app.UseSwaggerUI(c =>
             {
