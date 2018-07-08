@@ -96,12 +96,12 @@ namespace AspNetCoreWebapiSample.Test.Services
         {
             var obj = new Hero();
 
-            _heroRepositoryMock.Setup(t => t.IsItExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()))
+            _heroRepositoryMock.Setup(t => t.ExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()))
                 .ReturnsAsync(true)
                 .Verifiable();
 
             await Assert.ThrowsAsync<CustomFieldAlreadyExistsException>(() => _serviceTest.InsertAsync(obj));
-            _heroRepositoryMock.Verify(t => t.IsItExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()), Times.Once);
+            _heroRepositoryMock.Verify(t => t.ExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()), Times.Once);
             _heroRepositoryMock.Verify(t => t.InsertAsync(obj), Times.Never);
             _heroRepositoryMock.Verify(t => t.SaveChangesAsync(), Times.Never);
         }
@@ -131,13 +131,13 @@ namespace AspNetCoreWebapiSample.Test.Services
         {
             var expected = new Hero();
 
-            _heroRepositoryMock.Setup(t => t.IsItExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()))
+            _heroRepositoryMock.Setup(t => t.ExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()))
                 .ReturnsAsync(true)
                 .Verifiable();
 
             await Assert.ThrowsAsync<CustomFieldAlreadyExistsException>(() => _serviceTest.UpdateAsync(expected));
             _heroRepositoryMock.Verify(t => t.Update(expected), Times.Never);
-            _heroRepositoryMock.Verify(t => t.IsItExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()), Times.Once);
+            _heroRepositoryMock.Verify(t => t.ExistsAsync(It.IsAny<Expression<Func<Hero, bool>>>()), Times.Once);
             _heroRepositoryMock.Verify(t => t.SaveChangesAsync(), Times.Never);
         }
 

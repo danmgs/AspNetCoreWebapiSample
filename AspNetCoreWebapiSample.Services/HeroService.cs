@@ -41,7 +41,7 @@ namespace AspNetCoreWebapiSample.Services
 
         public async Task<Hero> InsertAsync(Hero obj)
         {
-            if (await _heroRepository.IsItExistsAsync(t => t.Code == obj.Code))
+            if (await _heroRepository.ExistsAsync(t => t.Code == obj.Code))
                 throw new CustomFieldAlreadyExistsException("code");
 
             if (!await _superPowerService.IsIdExistsAsync(obj.SuperPowerId))
@@ -57,12 +57,12 @@ namespace AspNetCoreWebapiSample.Services
 
         public async Task<bool> IsIdExistsAsync(int id)
         {
-            return await _heroRepository.IsItExistsAsync(t => t.Id == id);            
+            return await _heroRepository.ExistsAsync(t => t.Id == id);            
         }
 
         public async Task<Hero> UpdateAsync(Hero obj)
         {
-            if (await _heroRepository.IsItExistsAsync(t => t.Code == obj.Code && t.Id != obj.Id))
+            if (await _heroRepository.ExistsAsync(t => t.Code == obj.Code && t.Id != obj.Id))
                 throw new CustomFieldAlreadyExistsException("code");
 
             if (!await _superPowerService.IsIdExistsAsync(obj.SuperPowerId))

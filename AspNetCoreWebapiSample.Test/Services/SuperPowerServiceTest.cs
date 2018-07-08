@@ -83,14 +83,14 @@ namespace AspNetCoreWebapiSample.Test.Services
         public async void Create_ShouldReturnFieldExistsException()
         {
             var obj = new SuperPower();
-            _superPowerRepositoryMock.Setup(t => t.IsItExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()))
+            _superPowerRepositoryMock.Setup(t => t.ExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()))
                 .ReturnsAsync(true)
                 .Verifiable();
 
             await Assert.ThrowsAsync<CustomFieldAlreadyExistsException>(() => _serviceTest.InsertAsync(obj));
 
             _superPowerRepositoryMock.Verify(t => t.InsertAsync(obj), Times.Never);
-            _superPowerRepositoryMock.Verify(t => t.IsItExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()), Times.Once);
+            _superPowerRepositoryMock.Verify(t => t.ExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()), Times.Once);
             _superPowerRepositoryMock.Verify(t => t.SaveChangesAsync(), Times.Never);
         }
 
@@ -117,13 +117,13 @@ namespace AspNetCoreWebapiSample.Test.Services
             _superPowerRepositoryMock.Setup(t => t.Update(expected))
                 .Verifiable();
 
-            _superPowerRepositoryMock.Setup(t => t.IsItExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()))
+            _superPowerRepositoryMock.Setup(t => t.ExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()))
                 .ReturnsAsync(true)
                 .Verifiable();
 
             await Assert.ThrowsAsync<CustomFieldAlreadyExistsException>(() => _serviceTest.UpdateAsync(expected));
 
-            _superPowerRepositoryMock.Verify(t => t.IsItExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()), Times.Once);
+            _superPowerRepositoryMock.Verify(t => t.ExistsAsync(It.IsAny<Expression<Func<SuperPower, bool>>>()), Times.Once);
             _superPowerRepositoryMock.Verify(t => t.Update(expected), Times.Never);
             _superPowerRepositoryMock.Verify(t => t.SaveChangesAsync(), Times.Never);
         }

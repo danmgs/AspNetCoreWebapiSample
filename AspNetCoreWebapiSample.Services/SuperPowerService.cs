@@ -39,7 +39,7 @@ namespace AspNetCoreWebapiSample.Services
 
         public async Task<SuperPower> InsertAsync(SuperPower obj)
         {
-            if (await _superPowerRepository.IsItExistsAsync(t => t.Name == obj.Name))
+            if (await _superPowerRepository.ExistsAsync(t => t.Name == obj.Name))
                 throw new CustomFieldAlreadyExistsException("name");
 
             obj.CreateDate = DateTime.Now;
@@ -52,12 +52,12 @@ namespace AspNetCoreWebapiSample.Services
 
         public async Task<bool> IsIdExistsAsync(int id)
         {            
-            return await _superPowerRepository.IsItExistsAsync(t => t.Id == id);            
+            return await _superPowerRepository.ExistsAsync(t => t.Id == id);            
         }
 
         public async Task<SuperPower> UpdateAsync(SuperPower obj)
         {
-            if (await _superPowerRepository.IsItExistsAsync(t => t.Name == obj.Name && t.Id != obj.Id))
+            if (await _superPowerRepository.ExistsAsync(t => t.Name == obj.Name && t.Id != obj.Id))
                 throw new CustomFieldAlreadyExistsException("name");
 
             obj.UpdateDate = DateTime.Now;

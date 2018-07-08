@@ -28,7 +28,7 @@ namespace AspNetCoreWebapiSample.Infrastructure.Repository.Common
             return await _context.Set<T>().ToListAsync();
         }
         
-        public virtual async Task<bool> IsItExistsAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<bool> ExistsAsync(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>().AnyAsync(predicate);
         }
